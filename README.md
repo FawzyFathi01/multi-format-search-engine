@@ -1,79 +1,85 @@
 # Multi-Format Search Engine
 
-A powerful search engine that supports multiple file formats including PDF, CSV, TXT, and JSON files.
+محرك بحث متعدد الصيغ بواجهة ويب حديثة باستخدام Python وWhoosh وNLTK
 
-## Features
+---
 
-- Multi-format support (PDF, CSV, TXT, JSON)
-- Advanced search capabilities:
-  - Fuzzy matching
-  - Wildcard matching
-  - Case-insensitive search
-  - Partial word matching
-- Real-time indexing
-- Clean and user-friendly interface
+## فكرة المشروع
+محرك بحث ذكي يدعم البحث في ملفات PDF, TXT, CSV, Excel, JSON وصفحات الويب (Web Pages) من خلال واجهة ويب سهلة وحديثة.
 
-## Project Structure
+---
 
-```
-.
-├── app.py              # Main application file
-├── config.py           # Configuration settings
-├── requirements.txt    # Project dependencies
-├── data/
-│   ├── documents/     # Directory for documents to be indexed
-│   └── indexes/       # Directory for search indexes
-├── indexer/
-│   ├── base.py        # Base indexer class
-│   ├── pdf_indexer.py # PDF file indexer
-│   ├── csv_indexer.py # CSV file indexer
-│   ├── txt_indexer.py # Text file indexer
-│   └── json_indexer.py # JSON file indexer
-├── templates/
-│   └── index.html     # Main search interface
-└── static/
-    ├── css/
-    │   └── style.css  # Styling
-    └── js/
-        └── main.js    # Frontend functionality
-```
+## المميزات
+- دعم البحث في: PDF, TXT, CSV, Excel, JSON, Web Pages
+- واجهة مستخدم حديثة مع فلتر لاختيار نوع الملف
+- دعم استعلامات البحث المتقدمة: AND, OR, Phrase, Wildcard, Fuzzy
+- معالجة نصوص باستخدام NLTK
+- حساب Precision / Recall / F1-Score
+- تنظيم الكود وسهولة التوسعة
+- دعم اللغة العربية والإنجليزية
+- أيقونة موقع (favicon) تعبر عن البحث
 
-## Setup
+---
 
-1. Install Python 3.8 or higher
-2. Install required packages:
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. Install Tesseract OCR for PDF text extraction:
-   - Windows: Download and install from https://github.com/UB-Mannheim/tesseract/wiki
-   - Linux: `sudo apt-get install tesseract-ocr`
-   - macOS: `brew install tesseract`
+## المتطلبات
+- Python 3.8+
+- pip
+- المتطلبات البرمجية:
+  ```bash
+  pip install -r requirements.txt
+  ```
+- Tesseract OCR (لـ PDF)
+- Poppler (لـ PDF)
 
-4. Place your documents in the `data/documents` directory
+---
 
-## Running the Application
-
-1. Start the application:
+## خطوات التشغيل
+1. ضع ملفاتك في `data/documents`
+2. ضع روابط صفحات الويب في `indexer/web_urls.txt` (كل رابط في سطر)
+3. شغل التطبيق:
    ```bash
    python app.py
    ```
-2. Open your browser and navigate to `http://localhost:5000`
+4. افتح المتصفح على: [http://localhost:5000](http://localhost:5000)
+5. ابحث وحدد نوع الملف من القائمة المنسدلة
 
-## Search Features
+---
 
-- **Fuzzy Matching**: Find similar words (e.g., "laptp" finds "laptop")
-- **Wildcard Matching**: Find partial words (e.g., "lap*" finds "laptop")
-- **Case-insensitive**: Search works regardless of letter case
-- **Partial Matching**: Find words that contain your search term
+## أمثلة استعلامات البحث
+- كلمة واحدة: `python`
+- جملة: `information retrieval`
+- عبارة: `"search engine"`
+- استعلام AND: `python AND search`
+- استعلام OR: `python OR java`
+- Wildcard: `pyth*`
+- Fuzzy: `retrival~`
 
-## Supported File Formats
+---
 
-- **PDF**: Full text search with OCR support
-- **CSV**: Search across all columns
-- **TXT**: Plain text file search
-- **JSON**: Search in both simple and nested JSON structures
+## بنية المشروع
+```
+.
+├── app.py              # التطبيق الرئيسي
+├── config.py           # الإعدادات
+├── requirements.txt    # المتطلبات
+├── data/
+│   ├── documents/     # ملفات البحث
+│   └── indexes/       # الفهارس
+├── indexer/
+│   ├── pdf_indexer.py
+│   ├── txt_indexer.py
+│   ├── csv_indexer.py
+│   ├── excel_indexer.py
+│   ├── json_indexer.py
+│   ├── web_indexer.py
+│   └── web_urls.txt    # روابط صفحات الويب
+├── templates/
+│   └── index.html     # الواجهة
+└── static/
+    └── 1f50d.png      # أيقونة الموقع (عدسة بحث)
+```
 
-## Contributing
+---
 
-Feel free to submit issues and enhancement requests! 
+## المساهمة
+مرحبًا بأي اقتراحات أو تحسينات! 
