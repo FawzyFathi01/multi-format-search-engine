@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Format Search Engine</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='1f50d.png') }}">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            min-height: 100vh;
+        }
+        .search-container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin: 2rem auto;
+            max-width: 800px;
+        }
+        .search-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .search-header h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .search-header p {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+        .search-box-container {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        .search-box {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            font-size: 1.1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        .search-box:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+            outline: none;
+        }
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+        .search-button {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            border-radius: 10px;
+            background-color: #007bff;
+            border: none;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .search-button:hover {
+            background-color: #0056b3;
+            transform: translateY(-1px);
+        }
+        .results {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin: 2rem auto;
+            max-width: 800px;
+        }
+        .result-item {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+        .result-item:hover {
+            background-color: #f8f9fa;
+        }
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        .result-title {
+            color: #2c3e50;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-decoration: none;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        .result-title:hover {
+            color: #007bff;
+        }
+        .result-content {
+            color: #6c757d;
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+        .result-meta {
+            display: flex;
+            gap: 1rem;
+            color: #adb5bd;
+            font-size: 0.85rem;
+        }
+        .result-meta i {
+            margin-right: 0.3rem;
+        }
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            display: none;
+        }
+        .loading i {
+            font-size: 2rem;
+            color: #007bff;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .error {
+            color: #dc3545;
+            padding: 1rem;
+            margin: 1rem auto;
+            border-radius: 10px;
+            background-color: #f8d7da;
+            display: none;
+            max-width: 800px;
+        }
+        .file-type-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 5px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+        .pdf-badge { background-color: #ff6b6b; color: white; }
+        .csv-badge { background-color: #4ecdc4; color: white; }
+        .txt-badge { background-color: #45b7d1; color: white; }
+        .excel-badge { background-color: #96ceb4; color: white; }
+        .json-badge { background-color: #ffd93d; color: black; }
+        .web-badge { background-color: #6c5ce7; color: white; }
+    </style>
+</head>
+<body>
+    <div class="search-container">
+        <div class="search-header">
+            <h1>Multi-Format Search Engine</h1>
+            <p>Search through PDF, CSV, TXT, Excel, JSON, and Web files</p>
+        </div>
+        <div class="search-box-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="searchInput" class="search-box" placeholder="Enter your search query...">
+        </div>
+        <div class="d-flex align-items-center mb-3" style="max-width: 300px; margin: 0 auto 1rem auto;">
+            <label for="fileTypeSelect" class="me-2 mb-0" style="font-weight: 500; color: #2c3e50;">File Type:</label>
+            <select id="fileTypeSelect" class="form-select" style="width: 160px;">
+                <option value="all">All Types</option>
+                <option value="pdf">PDF</option>
+                <option value="csv">CSV</option>
+                <option value="txt">TXT</option>
+                <option value="json">JSON</option>
+                <option value="excel">Excel</option>
+                <option value="web">Web</option>
+            </select>
+        </div>
+        <button onclick="search()" class="search-button">
+            <i class="fas fa-search me-2"></i>Search
+        </button>
+    </div>
+
+    <div id="error" class="error"></div>
+    <div id="loading" class="loading">
+        <i class="fas fa-spinner"></i>
+        <p class="mt-2">Searching...</p>
+    </div>
+    <div id="results" class="results"></div>
+
+    <script>
+        function getFileTypeBadge(filetype) {
+            const badges = {
+                'pdf': 'pdf-badge',
+                'csv': 'csv-badge',
+                'txt': 'txt-badge',
+                'excel': 'excel-badge',
+                'json': 'json-badge',
+                'web': 'web-badge'
+            };
+            return `<span class="file-type-badge ${badges[filetype] || ''}">${filetype.toUpperCase()}</span>`;
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return 'N/A';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+        }
+
+        function search() {
+            const query = document.getElementById('searchInput').value.trim();
+            const filetype = document.getElementById('fileTypeSelect').value;
+            if (!query) {
+                showError('Please enter a search query');
+                return;
+            }
+
+            const resultsDiv = document.getElementById('results');
+            const loadingDiv = document.getElementById('loading');
+            const errorDiv = document.getElementById('error');
+
+            resultsDiv.innerHTML = '';
+            errorDiv.style.display = 'none';
+            loadingDiv.style.display = 'block';
+
+            fetch(`/search?q=${encodeURIComponent(query)}&filetype=${encodeURIComponent(filetype)}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    loadingDiv.style.display = 'none';
+                    if (data.length === 0) {
+                        resultsDiv.innerHTML = `
+                            <div class="text-center py-5">
+                                <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                                <h3>No results found</h3>
+                                <p class="text-muted">Try different search terms or check your spelling</p>
+                            </div>`;
+                        return;
+                    }
+
+                    const resultsHtml = data.map(result => `
+                        <div class="result-item">
+                            <div class="d-flex align-items-center mb-2">
+                                ${getFileTypeBadge(result.filetype)}
+                                <a href="file://${result.location}" class="result-title">${result.title}</a>
+                            </div>
+                            <div class="result-content">${result.content}</div>
+                            <div class="result-meta">
+                                <span><i class="fas fa-file"></i> ${result.filename}</span>
+                                <span><i class="fas fa-map-marker-alt"></i> ${result.location}</span>
+                                <span><i class="fas fa-star"></i> Score: ${result.score.toFixed(2)}</span>
+                            </div>
+                        </div>
+                    `).join('');
+
+                    resultsDiv.innerHTML = resultsHtml;
+                })
+                .catch(error => {
+                    loadingDiv.style.display = 'none';
+                    showError('An error occurred while searching. Please try again.');
+                    console.error('Search error:', error);
+                });
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.innerHTML = `
+                <i class="fas fa-exclamation-circle me-2"></i>
+                ${message}
+            `;
+            errorDiv.style.display = 'block';
+        }
+
+        // Allow searching with Enter key
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                search();
+            }
+        });
+    </script>
+</body>
+</html> 

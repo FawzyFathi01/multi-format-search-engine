@@ -1,0 +1,5 @@
+✅ File 2
+
+An Information Retrieval system has parts like indexing, searching, and ranking to organize and display results.
+These components work together to help users find the most useful content based on their queries.**
+

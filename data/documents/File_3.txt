@@ -1,0 +1,4 @@
+✅ File 3
+
+Information Retrieval focuses on finding entire documents that match a search, while Information Extraction finds specific facts inside them.
+Both are important in making data easier to understand and use.
